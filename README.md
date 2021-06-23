@@ -23,10 +23,10 @@
 
 ```
 {contest_id}/
-    ├ a.py
-    ├ b.py
+    ├ a.py||.cpp
+    ├ b.py||.cpp
     ├ ...
-    ├ f.py
+    ├ f.py||.cpp
     ├ info
     └ tests/
         ├ a/
