@@ -1,3 +1,4 @@
-/target
-.vscode/**
-.mypy_cache/**
+/.vscode
+/.mypy_cache
+/ojw/__pycache__
+/ojw.egg-info

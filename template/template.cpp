@@ -48,9 +48,9 @@ inline void init() {cin.tie(nullptr); std::ios::sync_with_stdio(false); cout << 
 // clang-format on
 #pragma endregion
 
-    void main() {
-        // code
-    }
+void main() {
+    // code
+}
 
 } // namespace mine
 
