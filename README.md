@@ -4,12 +4,13 @@
 
 ## やりたいこと
 
+**操作はコンテストディレクトリ直下から**
+
 ### テスト部分を自動化
 
-`ojw test|t [filename] [Options]`
+`ojw test|t task [filename] [Options]`
 
 Options:
-<!-- - -c --compile                      コンパイルを（強制）実行 -->
 - -p --passed \<passed options\>    oj側に渡されるオプション
 
 1. 必要ならコンパイル
@@ -17,6 +18,5 @@ Options:
     * sourceの指定がなければ既定のファイルをテスト
     * oj側に引数を渡す
 
-<!-- コマンドをコンテストディレクトリから扱う
 
-* `ojw submit|s tasklabel [source]` -->
+<!-- * `ojw submit|s tasklabel [source]` -->

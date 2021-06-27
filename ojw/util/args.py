@@ -1,8 +1,8 @@
-from typing import NamedTuple, Optional, List
+from typing import NamedTuple, Optional, List, Callable
 
 
 class ArgsTest(NamedTuple):
-    source: str
+    filename: str
     passed: List[str]
 
 
