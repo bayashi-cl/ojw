@@ -2,6 +2,7 @@ import argparse
 import json
 import pathlib
 import subprocess
+import sys
 import typing
 from typing import Dict, List, Optional, Union
 
@@ -27,6 +28,29 @@ def get_task_info(contestinfo: ContestInfoJSON, task_label: str) -> TaskInfoJSON
     return task_info
 
 
+def cpp_compile(source_file: pathlib.Path) -> None:
+    bin_file = source_file.parent / "a.out"
+    if bin_file.exists():
+        if source_file.stat().st_mtime > bin_file.stat().st_mtime:
+            return
+
+    gppargs = [
+        "g++",
+        str(source_file),
+        "-o",
+        str(bin_file),
+        "-std=gnu++17",
+        "-D_GLIBCXX_DEBUG",
+        "-Wall",
+        "-Wno-unknown-pragmas",
+    ]
+    try:
+        subprocess.run(gppargs, check=True)
+    except subprocess.CalledProcessError:
+        print("CE")
+        sys.exit(1)
+
+
 def test(args) -> None:
     task_label: str = args.task.upper()
     filename: Optional[str] = args.filename
@@ -45,12 +69,20 @@ def test(args) -> None:
     else:
         source_file = task_directory / filename
 
-    python_command = "python {}".format(str(source_file))
+    ext = source_file.suffix
+    if ext == ".py":
+        command = "python {}".format(str(source_file))
+    elif ext == ".cpp":
+        command = f"{str(task_directory)}/a.out"
+    else:
+        print("unknown file type")
+        raise ValueError
+
     oj_command: List[str] = [
         "oj",
         "test",
         "--command",
-        python_command,
+        command,
         "--directory",
         str(test_directory),
     ]
