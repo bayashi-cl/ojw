@@ -6,6 +6,8 @@ import sys
 import typing
 from typing import Dict, List, Optional, Union
 
+import colorama
+
 TaskInfoJSON = Dict[str, Union[str, Dict[str, str]]]
 ContestInfoJSON = Dict[str, Union[Dict[str, str], List[TaskInfoJSON]]]
 CONTEST_ACC = "contest.acc.json"
@@ -28,18 +30,27 @@ def get_task_info(contestinfo: ContestInfoJSON, task_label: str) -> TaskInfoJSON
     return task_info
 
 
+def print_blue(msg: str) -> None:
+    print("OJW: " + colorama.Fore.BLUE + msg + colorama.Style.RESET_ALL)
+
+
+def print_red(msg: str) -> None:
+    print("OJW: " + colorama.Fore.RED + msg + colorama.Style.RESET_ALL)
+
+
 def cpp_compile(source_file: pathlib.Path) -> None:
     bin_file = source_file.parent / "a.out"
     if bin_file.exists():
-        if source_file.stat().st_mtime > bin_file.stat().st_mtime:
+        if source_file.stat().st_mtime < bin_file.stat().st_mtime:
+            print_blue("Source file has already been compiled.")
             return
-
+    print_blue("Starting build...")
     gppargs = [
         "g++",
         str(source_file),
         "-o",
         str(bin_file),
-        "-std=gnu++17",
+        "-std=c++17",
         "-D_GLIBCXX_DEBUG",
         "-Wall",
         "-Wno-unknown-pragmas",
@@ -47,8 +58,10 @@ def cpp_compile(source_file: pathlib.Path) -> None:
     try:
         subprocess.run(gppargs, check=True)
     except subprocess.CalledProcessError:
-        print("CE")
+        print_red("compile error")
         sys.exit(1)
+
+    print_blue("Build finished successfully.")
 
 
 def test(args) -> None:
@@ -72,10 +85,13 @@ def test(args) -> None:
     ext = source_file.suffix
     if ext == ".py":
         command = "python {}".format(str(source_file))
+
     elif ext == ".cpp":
+        cpp_compile(source_file)
         command = f"{str(task_directory)}/a.out"
+
     else:
-        print("unknown file type")
+        print_red("unknown file type")
         raise ValueError
 
     oj_command: List[str] = [
@@ -93,6 +109,12 @@ def test(args) -> None:
     subprocess.run(oj_command)
 
 
+def submit(args) -> None:
+    ...
+    # task_label: str = args.task.upper()
+    # filename: Optional[str] = args.filename
+
+
 def main():
     parser = argparse.ArgumentParser(prog="ojw")
     subparser = parser.add_subparsers()
@@ -102,6 +124,10 @@ def main():
     command_test.add_argument("filename", default=None)
     command_test.add_argument("--passed", nargs="*")
     command_test.set_defaults(func=test)
+
+    command_submit = subparser.add_parser("submit", aliases=["s"])
+    command_submit.add_argument("task")
+    command_submit.set_defaults(func=submit)
 
     args = parser.parse_args()
     args.func(args)
