@@ -4,7 +4,7 @@ import pathlib
 import subprocess
 import sys
 import typing
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union, Tuple
 
 import colorama
 
@@ -30,11 +30,30 @@ def get_task_info(contestinfo: ContestInfoJSON, task_label: str) -> TaskInfoJSON
     return task_info
 
 
-def print_blue(msg: str) -> None:
+def get_case(
+    case_name: str, test_dir: pathlib.Path
+) -> Tuple[pathlib.Path, pathlib.Path]:
+    if case_name.isdecimal():
+        for case in test_dir.iterdir():
+            if case_name in str(case):
+                case_in = test_dir / (case.stem + ".in")
+                case_out = test_dir / (case.stem + ".out")
+    else:
+        case_in = test_dir / (case_name + ".in")
+        case_out = test_dir / (case_name + ".out")
+
+    if not (case_in.exists() and case_out.exists()):
+        log_red(f"{case_name} does not exist")
+        sys.exit(1)
+
+    return (case_in, case_out)
+
+
+def log_blue(msg: str) -> None:
     print("OJW: " + colorama.Fore.BLUE + msg + colorama.Style.RESET_ALL)
 
 
-def print_red(msg: str) -> None:
+def log_red(msg: str) -> None:
     print("OJW: " + colorama.Fore.RED + msg + colorama.Style.RESET_ALL)
 
 
@@ -42,9 +61,9 @@ def cpp_compile(source_file: pathlib.Path) -> None:
     bin_file = source_file.parent / "a.out"
     if bin_file.exists():
         if source_file.stat().st_mtime < bin_file.stat().st_mtime:
-            print_blue("Source file has already been compiled.")
+            log_blue("Source file has already been compiled.")
             return
-    print_blue("Starting build...")
+
     gppargs = [
         "g++",
         str(source_file),
@@ -55,19 +74,21 @@ def cpp_compile(source_file: pathlib.Path) -> None:
         "-Wall",
         "-Wno-unknown-pragmas",
     ]
+    log_blue("Starting build...")
     try:
         subprocess.run(gppargs, check=True)
     except subprocess.CalledProcessError:
-        print_red("compile error")
+        log_red("compile error")
         sys.exit(1)
 
-    print_blue("Build finished successfully.")
+    log_blue("Build finished successfully.")
 
 
 def test(args) -> None:
     task_label: str = args.task.upper()
     filename: Optional[str] = args.filename
     passed: Optional[List[str]] = args.passed
+    case: Optional[str] = args.case
 
     cwd = pathlib.Path.cwd()
     contest_info = get_contest_info(cwd)
@@ -82,16 +103,20 @@ def test(args) -> None:
     else:
         source_file = task_directory / filename
 
+    if not source_file.exists():
+        log_red("source file does not exist")
+        sys.exit(1)
+
     ext = source_file.suffix
     if ext == ".py":
-        command = "python {}".format(str(source_file))
+        command = f"python {source_file}"
 
     elif ext == ".cpp":
         cpp_compile(source_file)
-        command = f"{str(task_directory)}/a.out"
+        command = f"{task_directory}/a.out"
 
     else:
-        print_red("unknown file type")
+        log_red("unknown file type")
         raise ValueError
 
     oj_command: List[str] = [
@@ -105,6 +130,10 @@ def test(args) -> None:
 
     if passed is not None:
         oj_command += passed
+
+    if case is not None:
+        case_in, case_out = get_case(case, test_directory)
+        oj_command += [str(case_in), str(case_out)]
 
     subprocess.run(oj_command)
 
@@ -121,8 +150,9 @@ def main():
 
     command_test = subparser.add_parser("test", aliases=["t"])
     command_test.add_argument("task")
-    command_test.add_argument("filename", default=None)
-    command_test.add_argument("--passed", nargs="*")
+    command_test.add_argument("filename", nargs="?")
+    command_test.add_argument("--case", "-c")
+    command_test.add_argument("--passed", "-p", nargs="*")
     command_test.set_defaults(func=test)
 
     command_submit = subparser.add_parser("submit", aliases=["s"])
