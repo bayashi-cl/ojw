@@ -1,34 +1,22 @@
 # Online Judge Tools Wrapper
 
-[Online Judge Tools](https://github.com/online-judge-tools/oj/blob/master/README.ja.md)の極薄ラッパー
+[atcoder-cli](https://github.com/Tatamo/atcoder-cli)用の[Online Judge Tools](https://github.com/online-judge-tools/oj/blob/master/README.ja.md)極薄ラッパー
 
 ## やりたいこと
 
-[atcoder-cli](https://github.com/Tatamo/atcoder-cli)と[oj-prepare](https://github.com/online-judge-tools/template-generator)を足してnで割っている
+**操作はコンテストディレクトリ直下から**
 
-* `ojw new {contest_id}`
-    * ディレクトリの作成
-    * テンプレートの貼り付け
-    * サンプルケースのダウンロード(oj d)
-* `ojw test {source}`
-    * サンプルケースのテスト(oj t)
-    * 必要ならコンパイル
-* `ojw submit {source}`
-    * 提出(oj s)
+### テスト部分を自動化
 
-## 特化すること
+`ojw test|t task [filename] [Options]`
 
-* ソースファイル名を`{problem_id}.py`のようにすることで、問題を指定する
-* ディレクトリ構造は
+Options:
+- -p --passed \<passed options\>    oj側に渡されるオプション
 
-```
-{contest_id}/
-    ├ a.py||.cpp
-    ├ b.py||.cpp
-    ├ ...
-    ├ f.py||.cpp
-    ├ info
-    └ tests/
-        ├ a/
-        ...
-```
+1. 必要ならコンパイル
+1. サンプルケースのテスト (oj t)
+    * sourceの指定がなければ既定のファイルをテスト
+    * oj側に引数を渡す
+
+
+<!-- * `ojw submit|s tasklabel [source]` -->
