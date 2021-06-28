@@ -4,19 +4,26 @@
 
 ## やりたいこと
 
-**操作はコンテストディレクトリ直下から**
+* コンテストディレクトリ直下から`oj`コマンド、`acc`コマンドを実行
 
-### テスト部分を自動化
+### テスト
 
 `ojw test|t task [filename] [Options]`
-
-Options:
-- -p --passed \<passed options\>    oj側に渡されるオプション
 
 1. 必要ならコンパイル
 1. サンプルケースのテスト (oj t)
     * sourceの指定がなければ既定のファイルをテスト
-    * oj側に引数を渡す
 
+Options:
 
-<!-- * `ojw submit|s tasklabel [source]` -->
+* `-c --case <casename>`
+    - テストケースを指定
+    - `-c 1`と指定すれば`sample-1`がテストされる
+* `-p --passed <passed options>`
+    - oj側に渡されるオプション
+
+### 提出
+
+`ojw submit|s task [source]`
+
+1. `cd {task} && acc submit`とほぼ等価

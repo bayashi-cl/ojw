@@ -181,6 +181,7 @@ def main():
 
     command_submit = subparser.add_parser("submit", aliases=["s"])
     command_submit.add_argument("task")
+    command_submit.add_argument("filename", nargs="?")
     command_submit.set_defaults(func=submit)
 
     args = parser.parse_args()
