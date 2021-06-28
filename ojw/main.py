@@ -139,9 +139,32 @@ def test(args) -> None:
 
 
 def submit(args) -> None:
-    ...
-    # task_label: str = args.task.upper()
-    # filename: Optional[str] = args.filename
+    task_label: str = args.task.upper()
+    filename: Optional[str] = args.filename
+
+    cwd = pathlib.Path.cwd()
+    contest_info = get_contest_info(cwd)
+    task_info = get_task_info(contest_info, task_label)
+    task_info_directory = task_info["directory"]
+    task_info_directory = typing.cast(Dict[str, str], task_info_directory)
+
+    task_directory = cwd / task_info_directory["path"]
+    if filename is None:
+        source_file = task_directory / task_info_directory["submit"]
+    else:
+        source_file = task_directory / filename
+
+    if not source_file.exists():
+        log_red("source file does not exist")
+
+    acc_command = [
+        "acc",
+        "submit",
+    ]
+    if filename is not None:
+        acc_command.append(filename)
+
+    subprocess.run(acc_command, cwd=task_directory)
 
 
 def main():
@@ -152,6 +175,7 @@ def main():
     command_test.add_argument("task")
     command_test.add_argument("filename", nargs="?")
     command_test.add_argument("--case", "-c")
+    command_test.add_argument("--manual", "-m", action="store_true")
     command_test.add_argument("--passed", "-p", nargs="*")
     command_test.set_defaults(func=test)
 
