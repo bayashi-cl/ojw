@@ -35,9 +35,10 @@ def get_case(
 ) -> Tuple[pathlib.Path, pathlib.Path]:
     if case_name.isdecimal():
         for case in test_dir.iterdir():
-            if case_name in str(case):
+            if case_name in case.name:
                 case_in = test_dir / (case.stem + ".in")
                 case_out = test_dir / (case.stem + ".out")
+                break
     else:
         case_in = test_dir / (case_name + ".in")
         case_out = test_dir / (case_name + ".out")
