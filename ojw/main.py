@@ -51,11 +51,11 @@ def get_case(
 
 
 def log_blue(msg: str) -> None:
-    print("OJW: " + colorama.Fore.BLUE + msg + colorama.Style.RESET_ALL)
+    print(colorama.Fore.BLUE + "OJW" + colorama.Style.RESET_ALL + ": " + msg)
 
 
 def log_red(msg: str) -> None:
-    print("OJW: " + colorama.Fore.RED + msg + colorama.Style.RESET_ALL)
+    print(colorama.Fore.RED + "OJW" + colorama.Style.RESET_ALL + ": " + msg)
 
 
 def cpp_compile(source_file: pathlib.Path) -> None:
