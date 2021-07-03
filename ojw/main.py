@@ -127,6 +127,8 @@ def test(args) -> None:
         command,
         "--directory",
         str(test_directory),
+        "--tle",
+        "3",
     ]
 
     if passed is not None:
