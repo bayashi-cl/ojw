@@ -177,7 +177,7 @@ def main():
     command_test.add_argument("filename", nargs="?")
     command_test.add_argument("--case", "-c")
     command_test.add_argument("--manual", "-m", action="store_true")
-    command_test.add_argument("--passed", "-p", nargs="*")
+    command_test.add_argument("--passed", "-p", nargs=argparse.REMAINDER)
     command_test.set_defaults(func=test)
 
     command_submit = subparser.add_parser("submit", aliases=["s"])
