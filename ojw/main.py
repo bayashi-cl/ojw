@@ -74,6 +74,9 @@ def cpp_compile(source_file: pathlib.Path) -> None:
         "-D_GLIBCXX_DEBUG",
         "-Wall",
         "-Wno-unknown-pragmas",
+        "-O2",
+        "-g",
+        "-fsanitize=undefined",
     ]
     log_blue("Starting build...")
     try:
