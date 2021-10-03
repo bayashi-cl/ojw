@@ -72,6 +72,7 @@ def cpp_compile(source_file: pathlib.Path) -> None:
         str(bin_file),
         "-std=c++17",
         "-D_GLIBCXX_DEBUG",
+        "-DLOCAL",
         "-Wall",
         "-Wno-unknown-pragmas",
         "-g",
