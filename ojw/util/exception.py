@@ -1,0 +1,2 @@
+class NotACCExeption(Exception):
+    pass
