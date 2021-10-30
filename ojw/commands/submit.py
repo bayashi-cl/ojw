@@ -1,13 +1,14 @@
 import pathlib
+import shlex
 import subprocess
 import typing
 from typing import Dict, List, Optional
 
-# from util.const import CONTEST_ACC
-from ojw.util.info import find_task_dir, get_contest_info, get_task_info
-from ojw.util.log import log_blue, log_red
 from ojw.util.command import get_oj_command_submit
 from ojw.util.exception import NotACCExeption
+from ojw.util.bundle import bundle
+from ojw.util.info import find_task_dir, get_contest_info, get_task_info
+from ojw.util.log import log_blue, log_red
 
 
 def submit(args) -> None:
@@ -35,5 +36,10 @@ def submit(args) -> None:
     if not source_file.exists():
         log_red("source file does not exist")
 
+    if args.bundle:
+        source_file = bundle(source_file)
+
     oj_submit = get_oj_command_submit(source_file)
+    log_blue(f"source file found: {source_file}")
+    log_blue(f'run "{shlex.join(oj_submit)}" at {task_directory}')
     subprocess.run(oj_submit, cwd=task_directory)

@@ -4,6 +4,7 @@ import ojw.commands.submit
 import ojw.commands.test
 import ojw.commands.passer
 import ojw.commands.compile
+import ojw.commands.bundle
 
 
 def main() -> None:
@@ -24,6 +25,7 @@ def main() -> None:
     command_submit = subparser.add_parser("submit", aliases=["s"])
     command_submit.add_argument("task")
     command_submit.add_argument("filename", nargs="?")
+    command_submit.add_argument("--bundle", "-b", action="store_true")
     command_submit.set_defaults(func=ojw.commands.submit.submit)
 
     # passer
@@ -37,6 +39,12 @@ def main() -> None:
     command_compile.add_argument("filename", type=str)
     command_compile.add_argument("--force", "-f", action="store_true")
     command_compile.set_defaults(func=ojw.commands.compile.compile)
+
+    # bundle
+    command_bundle = subparser.add_parser("bundle", aliases=["b"])
+    command_bundle.add_argument("task")
+    command_bundle.add_argument("filename", nargs="?")
+    command_bundle.set_defaults(func=ojw.commands.bundle.bundle_)
 
     args = parser.parse_args()
     args.func(args)

@@ -1,16 +1,15 @@
 import pathlib
+import shlex
 import subprocess
 import sys
 import typing
 from typing import Dict, List, Optional
 
-# from util.const import CONTEST_ACC
-from ojw.util.info import get_case, get_contest_info, get_task_info
-from ojw.util.log import log_blue, log_red
+from ojw.util.command import get_exec_command, get_oj_command_test
 from ojw.util.compile import cpp_compile
-from ojw.util.command import get_oj_command_test, get_exec_command
 from ojw.util.exception import NotACCExeption
-from ojw.util.info import find_task_dir
+from ojw.util.info import find_task_dir, get_case, get_contest_info, get_task_info
+from ojw.util.log import log_blue, log_red
 
 
 def test(args) -> None:
@@ -51,6 +50,7 @@ def test(args) -> None:
         log_red("test folder does not exist")
         sys.exit(1)
 
+    log_blue(f"source file found: {source_file}")
     # コンパイル
     if source_file.suffix == ".cpp":
         cpp_compile(source_file)
@@ -63,6 +63,9 @@ def test(args) -> None:
 
     if case is not None:
         case_in, case_out = get_case(case, test_directory)
+        log_blue(f"case found {case_in}, {case_out}")
         oj_command += [str(case_in), str(case_out)]
 
+    log_blue(f"test file found: {test_directory}")
+    log_blue(f'run "{shlex.join(oj_command)}" at {task_directory}')
     subprocess.run(oj_command, cwd=task_directory)

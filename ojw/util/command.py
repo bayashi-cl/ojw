@@ -14,7 +14,7 @@ def get_oj_command_test(command: str) -> List[str]:
         # "--directory",
         # str(test_directory),
         "--tle",
-        "3",
+        "4",
     ]
     return oj_command
 
@@ -26,6 +26,17 @@ def get_oj_command_submit(source: pathlib.Path) -> List[str]:
         str(source),
     ]
     return oj_submit
+
+
+def get_oj_command_bundle(source: pathlib.Path):
+    oj_bundle = [
+        "oj-bundle",
+        "-I",
+        # "$HOME/dev/byslib",
+        str(pathlib.Path("/usr/local/include")),
+        str(source),
+    ]
+    return oj_bundle
 
 
 def get_exec_command(source: pathlib.Path) -> str:
