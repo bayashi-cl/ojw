@@ -13,10 +13,12 @@ from ojw.util.log import log_blue, log_red
 
 
 def test(args) -> None:
-    task_label: str = args.task.upper()
+    task_label: str = args.task
     filename: Optional[str] = args.filename
     passed: Optional[List[str]] = args.passed
     case: Optional[str] = args.case
+    optimize: bool = args.optimize
+    tle: Optional[int] = args.tle
 
     cwd = pathlib.Path.cwd()
     # ソースとサンプルディレクトリのパスが必要
@@ -39,7 +41,7 @@ def test(args) -> None:
     except NotACCExeption:
         if filename is None:
             filename = "main.cpp"
-        task_directory = find_task_dir(task_label.lower())
+        task_directory = find_task_dir(task_label)
         source_file = task_directory / filename
         test_directory = task_directory / "test"
 
@@ -53,10 +55,10 @@ def test(args) -> None:
     log_blue(f"source file found: {source_file}")
     # コンパイル
     if source_file.suffix == ".cpp":
-        cpp_compile(source_file)
+        cpp_compile(source_file, optimize)
 
     exec_command = get_exec_command(source_file)
-    oj_command = get_oj_command_test(exec_command)
+    oj_command = get_oj_command_test(exec_command, tle)
 
     if passed is not None:
         oj_command += passed
