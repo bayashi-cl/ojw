@@ -7,12 +7,12 @@ from ojw.util.log import log_red
 
 
 def bundle_(args):
-    task_label: str = args.task.upper()
+    task_label: str = args.task
     filename: Optional[str] = args.filename
 
     if filename is None:
         filename = "main.cpp"
-    task_directory = find_task_dir(task_label.lower())
+    task_directory = find_task_dir(task_label)
     source_file = task_directory / filename
 
     if source_file.suffix != ".cpp":

@@ -12,13 +12,13 @@ from ojw.util.log import log_blue, log_red
 
 
 def submit(args) -> None:
-    task_label: str = args.task.upper()
+    task_label: str = args.task
     filename: Optional[str] = args.filename
 
     cwd = pathlib.Path.cwd()
     try:
         contest_info = get_contest_info(cwd)
-        task_info = get_task_info(contest_info, task_label)
+        task_info = get_task_info(contest_info, task_label.upper())
         task_info_directory = task_info["directory"]
         task_info_directory = typing.cast(Dict[str, str], task_info_directory)
 
@@ -30,7 +30,7 @@ def submit(args) -> None:
     except NotACCExeption:
         if filename is None:
             filename = "main.cpp"
-        task_directory = find_task_dir(task_label.lower())
+        task_directory = find_task_dir(task_label)
         source_file = task_directory / filename
 
     if not source_file.exists():
