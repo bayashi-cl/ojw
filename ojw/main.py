@@ -17,7 +17,9 @@ def main() -> None:
     command_test.add_argument("task")
     command_test.add_argument("filename", nargs="?")
     command_test.add_argument("--case", "-c")
-    command_test.add_argument("--manual", "-m", action="store_true")
+    # command_test.add_argument("--manual", "-m", action="store_true")
+    command_test.add_argument("--optimize", "-o", action="store_true")
+    command_test.add_argument("--tle", "-t", type=int)
     command_test.add_argument("--passed", "-p", nargs=argparse.REMAINDER)
     command_test.set_defaults(func=ojw.commands.test.test)
 
