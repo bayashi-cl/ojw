@@ -56,6 +56,8 @@ def find_task_dir(task: str) -> pathlib.Path:
     subdir = [x for x in cwd.iterdir() if x.is_dir()]
 
     for dir in subdir:
+        if dir.name.startswith("."):
+            continue
         if str(dir).endswith(task):
             problem_dir = dir
             break
