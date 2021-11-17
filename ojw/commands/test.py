@@ -6,7 +6,7 @@ import typing
 from typing import Dict, List, Optional
 
 from ojw.util.command import get_exec_command, get_oj_command_test
-from ojw.util.compile import cpp_compile
+from ojw.util.compile import compile_
 from ojw.util.exception import NotACCExeption
 from ojw.util.info import find_task_dir, get_case, get_contest_info, get_task_info
 from ojw.util.log import log_blue, log_red
@@ -54,8 +54,13 @@ def test(args) -> None:
 
     log_blue(f"source file found: {source_file}")
     # コンパイル
-    if source_file.suffix == ".cpp":
-        cpp_compile(source_file, optimize)
+    # if source_file.suffix == ".cpp":
+    #     cpp_compile(source_file, optimize)
+    # if source_file.suffix == ".kt":
+    #     kt_compile(source_file)
+
+    if source_file.suffix in {".cpp", ".kt", ".nim"}:
+        compile_(source_file, optimize)
 
     exec_command = get_exec_command(source_file)
     oj_command = get_oj_command_test(exec_command, tle)

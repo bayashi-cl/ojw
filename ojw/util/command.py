@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Tuple
 import pathlib
 
 from ojw.util.log import log_red
@@ -13,8 +13,6 @@ def get_oj_command_test(command: str, tle: Optional[int]) -> List[str]:
         "test",
         "--command",
         command,
-        # "--directory",
-        # str(test_directory),
         "--tle",
         str(tle),
     ]
@@ -48,6 +46,12 @@ def get_exec_command(source: pathlib.Path) -> str:
     elif ext == ".cpp":
         command = str(source.with_name("a.out"))
 
+    elif ext == ".kt":
+        command = f"kotlin {source.with_name('main.jar')}"
+
+    elif ext == ".nim":
+        command = str(source.with_name("main"))
+
     else:
         log_red("unknown file type")
         raise ValueError
@@ -79,3 +83,43 @@ def get_gpp_compile_args(
             "-fsanitize=undefined",
         ]
     return res
+
+
+def get_kotlinc_compile_args(source: pathlib.Path, bin: pathlib.Path) -> List[str]:
+    res = [
+        "kotlinc",
+        str(source),
+        "-include-runtime",
+        "-d",
+        str(bin),
+    ]
+    return res
+
+
+def get_nim_compile_args(source: pathlib.Path, bin: pathlib.Path) -> List[str]:
+    res = [
+        "nim",
+        "compile",
+        "--verbosity:0",
+        "--hints:off",
+        "--out:" + str(bin),
+        str(source),
+    ]
+    return res
+
+
+def get_compile_args_and_bin(
+    source: pathlib.Path, optimize: bool
+) -> Tuple[List[str], pathlib.Path]:
+    ext = source.suffix
+    if ext == ".cpp":
+        bin_file = source.with_name("a.out")
+        com = get_gpp_compile_args(source, bin_file, optimize)
+    elif ext == ".kt":
+        bin_file = source.with_name("main.jar")
+        com = get_kotlinc_compile_args(source, bin_file)
+    elif ext == ".nim":
+        bin_file = source.with_name("main")
+        com = get_nim_compile_args(source, bin_file)
+
+    return com, bin_file
