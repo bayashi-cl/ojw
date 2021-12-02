@@ -53,12 +53,8 @@ def test(args) -> None:
         sys.exit(1)
 
     log_blue(f"source file found: {source_file}")
-    # コンパイル
-    # if source_file.suffix == ".cpp":
-    #     cpp_compile(source_file, optimize)
-    # if source_file.suffix == ".kt":
-    #     kt_compile(source_file)
 
+    # コンパイル
     if source_file.suffix in {".cpp", ".kt", ".nim"}:
         compile_(source_file, optimize)
 
