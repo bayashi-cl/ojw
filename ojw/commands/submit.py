@@ -1,12 +1,13 @@
 import pathlib
 import shlex
 import subprocess
+import sys
 import typing
 from typing import Dict, List, Optional
 
+from ojw.util.bundle import bundle
 from ojw.util.command import get_oj_command_submit
 from ojw.util.exception import NotACCExeption
-from ojw.util.bundle import bundle
 from ojw.util.info import find_task_dir, get_contest_info, get_task_info
 from ojw.util.log import log_blue, log_red
 
@@ -35,6 +36,7 @@ def submit(args) -> None:
 
     if not source_file.exists():
         log_red("source file does not exist")
+        sys.exit(1)
 
     if args.bundle:
         source_file = bundle(source_file)
