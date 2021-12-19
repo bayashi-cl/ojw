@@ -50,7 +50,7 @@ def get_exec_command(source: pathlib.Path) -> str:
         command = f"kotlin {source.with_name('main.jar')}"
 
     elif ext == ".nim":
-        command = str(source.with_name("main"))
+        command = str(source.with_name("a.out"))
 
     else:
         log_red("unknown file type")
@@ -99,7 +99,7 @@ def get_kotlinc_compile_args(source: pathlib.Path, bin: pathlib.Path) -> List[st
 def get_nim_compile_args(source: pathlib.Path, bin: pathlib.Path) -> List[str]:
     res = [
         "nim",
-        "compile",
+        "cpp",
         "--verbosity:0",
         "--hints:off",
         "--out:" + str(bin),
@@ -119,7 +119,7 @@ def get_compile_args_and_bin(
         bin_file = source.with_name("main.jar")
         com = get_kotlinc_compile_args(source, bin_file)
     elif ext == ".nim":
-        bin_file = source.with_name("main")
+        bin_file = source.with_name("a.out")
         com = get_nim_compile_args(source, bin_file)
 
     return com, bin_file
