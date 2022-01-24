@@ -1,2 +1,0 @@
-class NotACCExeption(Exception):
-    pass

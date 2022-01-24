@@ -5,32 +5,7 @@ import typing
 from typing import Dict, List, Tuple, Union
 from logging import getLogger
 
-from ojw.util.const import CONTEST_ACC
-from ojw.util.exception import NotACCExeption
-
 logger = getLogger(__name__)
-
-TaskInfoJSON = Dict[str, Union[str, Dict[str, str]]]
-ContestInfoJSON = Dict[str, Union[Dict[str, str], List[TaskInfoJSON]]]
-
-
-def get_contest_info(cwd: pathlib.Path) -> ContestInfoJSON:
-    file = cwd / CONTEST_ACC
-    if not file.exists():
-        raise NotACCExeption
-    return json.load(file.open())
-
-
-def get_task_info(contestinfo: ContestInfoJSON, task_label: str) -> TaskInfoJSON:
-    for task in contestinfo["tasks"]:
-        task = typing.cast(TaskInfoJSON, task)
-        if task["label"] == task_label:
-            task_info = task
-            break
-    else:
-        raise ValueError
-
-    return task_info
 
 
 def get_case(
