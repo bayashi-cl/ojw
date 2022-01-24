@@ -96,10 +96,20 @@ def get_kotlinc_compile_args(source: pathlib.Path, bin: pathlib.Path) -> List[st
     return res
 
 
-def get_nim_compile_args(source: pathlib.Path, bin: pathlib.Path) -> List[str]:
+def get_nim_compile_args(
+    source: pathlib.Path, bin: pathlib.Path, optimize: bool
+) -> List[str]:
     res = [
         "nim",
         "cpp",
+    ]
+    if optimize:
+        res += [
+            "-d:release",
+            "--opt:speed",
+            "--multimethods:on",
+        ]
+    res += [
         "--verbosity:0",
         "--hints:off",
         "--out:" + str(bin),
@@ -120,6 +130,6 @@ def get_compile_args_and_bin(
         com = get_kotlinc_compile_args(source, bin_file)
     elif ext == ".nim":
         bin_file = source.with_name("a.out")
-        com = get_nim_compile_args(source, bin_file)
+        com = get_nim_compile_args(source, bin_file, optimize)
 
     return com, bin_file
