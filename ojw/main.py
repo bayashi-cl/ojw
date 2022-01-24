@@ -1,10 +1,14 @@
 import argparse
+from logging import getLogger
 
 import ojw.commands.submit
 import ojw.commands.test
 import ojw.commands.passer
 import ojw.commands.compile
 import ojw.commands.bundle
+from ojw.util.log import setup_logger
+
+logger = getLogger(__name__)
 
 
 def main() -> None:
@@ -49,6 +53,7 @@ def main() -> None:
     command_bundle.set_defaults(func=ojw.commands.bundle.bundle_)
 
     args = parser.parse_args()
+    setup_logger(True)
     args.func(args)
 
 

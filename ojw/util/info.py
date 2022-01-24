@@ -2,11 +2,13 @@ import json
 import pathlib
 import sys
 import typing
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Tuple, Union
+from logging import getLogger
 
 from ojw.util.const import CONTEST_ACC
-from ojw.util.log import log_blue, log_red
 from ojw.util.exception import NotACCExeption
+
+logger = getLogger(__name__)
 
 TaskInfoJSON = Dict[str, Union[str, Dict[str, str]]]
 ContestInfoJSON = Dict[str, Union[Dict[str, str], List[TaskInfoJSON]]]
@@ -45,7 +47,7 @@ def get_case(
         case_out = test_dir / (case_name + ".out")
 
     if not (case_in.exists() and case_out.exists()):
-        log_red(f"{case_name} does not exist")
+        logger.error(f"{case_name} does not exist")
         sys.exit(1)
 
     return (case_in, case_out)
@@ -62,7 +64,7 @@ def find_task_dir(task: str) -> pathlib.Path:
             problem_dir = dir
             break
     else:
-        log_red("cannot find such problem.")
+        logger.error("cannot find such problem.")
         sys.exit(1)
 
     return problem_dir

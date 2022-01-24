@@ -1,7 +1,8 @@
 from typing import List, Optional, Tuple
 import pathlib
+from logging import getLogger
 
-from ojw.util.log import log_red
+logger = getLogger(__name__)
 
 
 def get_oj_command_test(command: str, tle: Optional[int]) -> List[str]:
@@ -53,7 +54,7 @@ def get_exec_command(source: pathlib.Path) -> str:
         command = str(source.with_name("a.out"))
 
     else:
-        log_red("unknown file type")
+        logger.error("unknown file type")
         raise ValueError
 
     return command

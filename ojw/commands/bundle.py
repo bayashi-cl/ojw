@@ -1,9 +1,12 @@
 import sys
+from logging import getLogger
 from typing import Optional
 
 from ojw.util.bundle import bundle
 from ojw.util.info import find_task_dir
-from ojw.util.log import log_red
+
+
+logger = getLogger(__name__)
 
 
 def bundle_(args):
@@ -16,11 +19,11 @@ def bundle_(args):
     source_file = task_directory / filename
 
     if source_file.suffix != ".cpp":
-        log_red("bundle is only for c++")
+        logger.error("bundle is only for c++")
         sys.exit(1)
 
     if not source_file.exists():
-        log_red("source file does not exist")
+        logger.error("source file does not exist")
         sys.exit(1)
 
     bundle(source_file)

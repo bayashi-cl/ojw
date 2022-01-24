@@ -3,13 +3,15 @@ import shlex
 import subprocess
 import sys
 import typing
+from logging import getLogger
 from typing import Dict, List, Optional
 
 from ojw.util.command import get_exec_command, get_oj_command_test
 from ojw.util.compile import compile_
 from ojw.util.exception import NotACCExeption
 from ojw.util.info import find_task_dir, get_case, get_contest_info, get_task_info
-from ojw.util.log import log_blue, log_red
+
+logger = getLogger(__name__)
 
 
 def test(args) -> None:
@@ -46,13 +48,13 @@ def test(args) -> None:
         test_directory = task_directory / "test"
 
     if not source_file.exists():
-        log_red("source file does not exist")
+        logger.error("source file does not exist")
         sys.exit(1)
     if not test_directory.exists():
-        log_red("test folder does not exist")
+        logger.error("test folder does not exist")
         sys.exit(1)
 
-    log_blue(f"source file found: {source_file}")
+    logger.info(f"source file found: {source_file}")
 
     # コンパイル
     if source_file.suffix in {".cpp", ".kt", ".nim"}:
@@ -66,9 +68,9 @@ def test(args) -> None:
 
     if case is not None:
         case_in, case_out = get_case(case, test_directory)
-        log_blue(f"case found {case_in}, {case_out}")
+        logger.info(f"case found {case_in}, {case_out}")
         oj_command += [str(case_in), str(case_out)]
 
-    log_blue(f"test file found: {test_directory}")
-    log_blue(f'run "{shlex.join(oj_command)}" at {task_directory}')
+    logger.info(f"test file found: {test_directory}")
+    logger.info(f'run "{shlex.join(oj_command)}" at {task_directory}')
     subprocess.run(oj_command, cwd=task_directory)

@@ -3,13 +3,15 @@ import shlex
 import subprocess
 import sys
 import typing
+from logging import getLogger
 from typing import Dict, List, Optional
 
 from ojw.util.bundle import bundle
 from ojw.util.command import get_oj_command_submit
 from ojw.util.exception import NotACCExeption
 from ojw.util.info import find_task_dir, get_contest_info, get_task_info
-from ojw.util.log import log_blue, log_red
+
+logger = getLogger(__name__)
 
 
 def submit(args) -> None:
@@ -35,7 +37,7 @@ def submit(args) -> None:
         source_file = task_directory / filename
 
     if not source_file.exists():
-        log_red("source file does not exist")
+        logger.error("source file does not exist")
         sys.exit(1)
 
     # if args.bundle:
@@ -43,6 +45,6 @@ def submit(args) -> None:
         source_file = bundle(source_file)
 
     oj_submit = get_oj_command_submit(source_file)
-    log_blue(f"source file found: {source_file}")
-    log_blue(f'run "{shlex.join(oj_submit)}" at {task_directory}')
+    logger.info(f"source file found: {source_file}")
+    logger.info(f'run "{shlex.join(oj_submit)}" at {task_directory}')
     subprocess.run(oj_submit, cwd=task_directory)
