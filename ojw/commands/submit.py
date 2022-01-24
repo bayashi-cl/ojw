@@ -38,7 +38,8 @@ def submit(args) -> None:
         log_red("source file does not exist")
         sys.exit(1)
 
-    if args.bundle:
+    # if args.bundle:
+    if source_file.suffix == ".cpp" or args.bundle:
         source_file = bundle(source_file)
 
     oj_submit = get_oj_command_submit(source_file)
