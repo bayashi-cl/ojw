@@ -6,7 +6,7 @@ import ojw.commands.test
 import ojw.commands.passer
 import ojw.commands.compile
 import ojw.commands.bundle
-from ojw.util.log import setup_logger
+from .util.log import setup_logger
 
 logger = getLogger(__name__)
 

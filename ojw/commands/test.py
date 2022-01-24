@@ -8,8 +8,7 @@ from typing import Dict, List, Optional
 
 from ojw.util.command import get_exec_command, get_oj_command_test
 from ojw.util.compile import compile_
-from ojw.util.exception import NotACCExeption
-from ojw.util.info import find_task_dir, get_case, get_contest_info, get_task_info
+from ojw.util.info import find_task_dir, get_case
 
 logger = getLogger(__name__)
 
@@ -22,30 +21,12 @@ def test(args) -> None:
     optimize: bool = args.optimize
     tle: Optional[int] = args.tle
 
-    cwd = pathlib.Path.cwd()
     # ソースとサンプルディレクトリのパスが必要
-
-    # atcoder-cli で作成されたとき
-    try:
-        contest_info = get_contest_info(cwd)
-        task_info = get_task_info(contest_info, task_label)
-        task_info_directory = task_info["directory"]
-        task_info_directory = typing.cast(Dict[str, str], task_info_directory)
-
-        task_directory = cwd / task_info_directory["path"]
-        test_directory = task_directory / task_info_directory["testdir"]
-        if filename is None:
-            source_file = task_directory / task_info_directory["submit"]
-        else:
-            source_file = task_directory / filename
-
-    # online-judge-toolで作成されたとき
-    except NotACCExeption:
-        if filename is None:
-            filename = "main.cpp"
-        task_directory = find_task_dir(task_label)
-        source_file = task_directory / filename
-        test_directory = task_directory / "test"
+    if filename is None:
+        filename = "main.cpp"
+    task_directory = find_task_dir(task_label)
+    source_file = task_directory / filename
+    test_directory = task_directory / "test"
 
     if not source_file.exists():
         logger.error("source file does not exist")

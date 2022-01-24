@@ -1,6 +1,6 @@
 # Online Judge Tools Wrapper
 
-[atcoder-cli](https://github.com/Tatamo/atcoder-cli)用の[Online Judge Tools](https://github.com/online-judge-tools/oj/blob/master/README.ja.md)極薄ラッパー
+[Online Judge Tools](https://github.com/online-judge-tools/oj/blob/master/README.ja.md)極薄ラッパー
 
 ## やりたいこと
 
