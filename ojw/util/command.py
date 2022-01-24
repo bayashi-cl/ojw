@@ -39,19 +39,18 @@ def get_oj_command_bundle(source: pathlib.Path):
     return oj_bundle
 
 
-def get_exec_command(source: pathlib.Path) -> str:
-    ext = source.suffix
+def get_exec_command(source: pathlib.Path, ext: str) -> str:
     if ext == ".py":
         command = f"python {source}"
 
     elif ext == ".cpp":
-        command = str(source.with_name("a.out"))
+        command = str(source)
 
     elif ext == ".kt":
-        command = f"kotlin {source.with_name('main.jar')}"
+        command = f"kotlin {source}"
 
     elif ext == ".nim":
-        command = str(source.with_name("a.out"))
+        command = str(source)
 
     else:
         logger.error("unknown file type")
@@ -123,14 +122,18 @@ def get_compile_args_and_bin(
     source: pathlib.Path, optimize: bool
 ) -> Tuple[List[str], pathlib.Path]:
     ext = source.suffix
+    bin_dir = pathlib.Path().cwd() / "bin"
+    if not bin_dir.exists():
+        bin_dir.mkdir(exist_ok=True)
+
     if ext == ".cpp":
-        bin_file = source.with_name("a.out")
+        bin_file = bin_dir / "a.out"
         com = get_gpp_compile_args(source, bin_file, optimize)
     elif ext == ".kt":
-        bin_file = source.with_name("main.jar")
+        bin_file = bin_dir / "main.jar"
         com = get_kotlinc_compile_args(source, bin_file)
     elif ext == ".nim":
-        bin_file = source.with_name("a.out")
+        bin_file = bin_dir / "a.out"
         com = get_nim_compile_args(source, bin_file, optimize)
 
     return com, bin_file

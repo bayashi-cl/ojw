@@ -39,9 +39,11 @@ def test(args) -> None:
 
     # コンパイル
     if source_file.suffix in {".cpp", ".kt", ".nim"}:
-        compile_(source_file, optimize)
+        bin_file = compile_(source_file, optimize)
+    else:
+        bin_file = source_file
 
-    exec_command = get_exec_command(source_file)
+    exec_command = get_exec_command(bin_file, source_file.suffix)
     oj_command = get_oj_command_test(exec_command, tle)
 
     if passed is not None:
