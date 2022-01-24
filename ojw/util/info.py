@@ -32,14 +32,19 @@ def find_task_dir(task: str) -> pathlib.Path:
     cwd = pathlib.Path.cwd()
     subdir = [x for x in cwd.iterdir() if x.is_dir()]
 
+    problem_dir: List[pathlib.Path] = []
     for dir in subdir:
         if dir.name.startswith("."):
             continue
         if str(dir).endswith(task):
-            problem_dir = dir
-            break
-    else:
+            problem_dir.append(dir)
+
+    if len(problem_dir) == 0:
         logger.error("cannot find such problem.")
         sys.exit(1)
-
-    return problem_dir
+    elif len(problem_dir) == 1:
+        return problem_dir[0]
+    else:
+        logger.error("Multiple directories applied.")
+        logger.error(" ".join(dir.name for dir in problem_dir))
+        sys.exit(1)
