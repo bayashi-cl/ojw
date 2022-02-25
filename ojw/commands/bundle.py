@@ -18,8 +18,8 @@ def bundle_(args):
     task_directory = find_task_dir(task_label)
     source_file = task_directory / filename
 
-    if source_file.suffix != ".cpp":
-        logger.error("bundle is only for c++")
+    if source_file.suffix not in {".cpp", ".py"}:
+        logger.error("bundle is only for c++ or Python")
         sys.exit(1)
 
     if not source_file.exists():

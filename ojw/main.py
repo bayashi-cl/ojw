@@ -31,7 +31,8 @@ def main() -> None:
     command_submit = subparser.add_parser("submit", aliases=["s"])
     command_submit.add_argument("task")
     command_submit.add_argument("filename", nargs="?")
-    command_submit.add_argument("--bundle", "-b", action="store_true")
+    command_submit.add_argument("--no-bundle", "-nb", action="store_false")
+    command_submit.add_argument("--pypy", action="store_true")
     command_submit.set_defaults(func=ojw.commands.submit.submit)
 
     # passer

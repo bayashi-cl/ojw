@@ -6,7 +6,6 @@ logger = getLogger(__name__)
 
 
 def get_oj_command_test(command: str, tle: Optional[int]) -> List[str]:
-    # def get_oj_command(command: str, test_directory: pathlib.Path) -> List[str]:
     if tle is None:
         tle = 10
     oj_command = [
@@ -37,6 +36,19 @@ def get_oj_command_bundle(source: pathlib.Path):
         str(source),
     ]
     return oj_bundle
+
+
+def get_byslib_command_bundle(source: pathlib.Path):
+    com = [
+        "python",
+        "-m",
+        "expander",
+        str(source),
+        "--modules",
+        "atcoder",
+        "byslib",
+    ]
+    return com
 
 
 def get_exec_command(source: pathlib.Path, ext: str) -> str:
