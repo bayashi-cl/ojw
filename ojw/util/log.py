@@ -1,4 +1,5 @@
 import logging
+import sys
 
 from colorlog import ColoredFormatter
 
@@ -16,7 +17,7 @@ def setup_logger(verbose: bool) -> None:
             "CRITICAL": "red",
         },
     )
-    handler = logging.StreamHandler()
+    handler = logging.StreamHandler(stream=sys.stdout)
     handler.setFormatter(formatter)
     if verbose:
         logging.basicConfig(level=logging.DEBUG, handlers=[handler])

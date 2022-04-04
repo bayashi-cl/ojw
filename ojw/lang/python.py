@@ -21,15 +21,9 @@ class CPythonLang(LangBase):
         except KeyError:
             logger.error("Please specify bundle command for Python.")
             logger.error("oj-bundle does not support Python.")
-            # for debug
             sys.exit(1)
 
         flags: list[str] = self.config.get("bundle_flags", [])
-
-        # for debug
-        # args = ["python", "-m", "expander"]
-        # flags = ["-m", "byslib", "atcoder", "sortedcontainers", "more_itertools"]
-
         args.append(str(source))
         return args + flags
 

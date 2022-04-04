@@ -14,7 +14,6 @@ logger = getLogger(__name__)
 
 def main() -> None:
     setup_logger(True)
-    # config = get_config()
     parser = argparse.ArgumentParser(prog="ojw")
     subparser = parser.add_subparsers()
 

@@ -34,13 +34,8 @@ class GCCLang(LangBase):
 
     def bundle_command(self, source: Path) -> list[str]:
         args = self.config.get("bundle_command", ["oj-bundle"])
-        flags = self.config.get("bundle_flags", [])
-
-        # for debug
-        # flags = ["--release", "-I", "/usr/local/include"]
-
         args.append(str(source))
-
+        flags = self.config.get("bundle_flags", [])
         return args + flags
 
     def execute_command(self, exe: Path) -> str:
