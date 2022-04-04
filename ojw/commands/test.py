@@ -1,59 +1,55 @@
-import pathlib
+from __future__ import annotations
+
 import shlex
 import subprocess
-import sys
-import typing
 from logging import getLogger
-from typing import Dict, List, Optional
+from pathlib import Path
+from typing import Optional
 
-from ojw.util.command import get_exec_command, get_oj_command_test
-from ojw.util.compile import compile_
-from ojw.util.info import find_task_dir, get_case
+from ojw.lang.guesslang import guess_lang
+from ojw.util.info import get_case
 
 logger = getLogger(__name__)
 
 
 def test(args) -> None:
-    task_label: str = args.task
-    filename: Optional[str] = args.filename
-    passed: Optional[List[str]] = args.passed
-    case: Optional[str] = args.case
+    source: Path = args.filename.resolve()
     optimize: bool = args.optimize
-    tle: Optional[int] = args.tle
+    tle: int = args.tle
+    passed: list[str] = args.passed
+    casename: Optional[str] = args.case
 
-    # ソースとサンプルディレクトリのパスが必要
-    if filename is None:
-        filename = "main.cpp"
-    task_directory = find_task_dir(task_label)
-    source_file = task_directory / filename
-    test_directory = task_directory / "test"
+    if not source.exists():
+        logger.error("Source does not exist.")
+        raise FileNotFoundError
+    if not source.is_file():
+        logger.error("Source is not file.")
+        raise FileNotFoundError
 
-    if not source_file.exists():
-        logger.error("source file does not exist")
-        sys.exit(1)
-    if not test_directory.exists():
-        logger.error("test folder does not exist")
-        sys.exit(1)
+    test_directory = source.parent / "test"
+    assert test_directory.exists()
 
-    logger.info(f"source file found: {source_file}")
+    lang = guess_lang(source)
+    exe = lang.compile(source, optimize)
+    command = lang.execute_command(exe)
 
-    # コンパイル
-    if source_file.suffix in {".cpp", ".kt", ".nim"}:
-        bin_file = compile_(source_file, optimize)
-    else:
-        bin_file = source_file
+    oj_test = [
+        "oj",
+        "test",
+        "--command",
+        command,
+        "--tle",
+        str(tle),
+        "--directory",
+        str(test_directory),
+    ]
 
-    exec_command = get_exec_command(bin_file, source_file.suffix)
-    oj_command = get_oj_command_test(exec_command, tle)
+    oj_test += passed
 
-    if passed is not None:
-        oj_command += passed
+    if casename is not None:
+        case = get_case(casename, test_directory)
+        logger.info(f"case found {case}")
+        oj_test += case
 
-    if case is not None:
-        case_in, case_out = get_case(case, test_directory)
-        logger.info(f"case found {case_in}, {case_out}")
-        oj_command += [str(case_in), str(case_out)]
-
-    logger.info(f"test file found: {test_directory}")
-    logger.info(f'run "{shlex.join(oj_command)}" at {task_directory}')
-    subprocess.run(oj_command, cwd=task_directory)
+    logger.info(f'run "{shlex.join(oj_test)}" at {source.parent}.')
+    subprocess.run(oj_test, cwd=source.parent)

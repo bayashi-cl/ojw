@@ -1,29 +1,21 @@
-import sys
 from logging import getLogger
-from typing import Optional
+from pathlib import Path
 
-from ojw.util.bundle import bundle
-from ojw.util.info import find_task_dir
-
+from ojw.lang.guesslang import guess_lang
 
 logger = getLogger(__name__)
 
 
-def bundle_(args):
-    task_label: str = args.task
-    filename: Optional[str] = args.filename
+def bundle(args):
+    source: Path = args.filename.resolve()
 
-    if filename is None:
-        filename = "main.cpp"
-    task_directory = find_task_dir(task_label)
-    source_file = task_directory / filename
+    if not source.exists():
+        logger.error("Source does not exist.")
+        raise FileNotFoundError
+    if not source.is_file():
+        logger.error("Source is not file.")
+        raise FileNotFoundError
 
-    if source_file.suffix not in {".cpp", ".py"}:
-        logger.error("bundle is only for c++ or Python")
-        sys.exit(1)
-
-    if not source_file.exists():
-        logger.error("source file does not exist")
-        sys.exit(1)
-
-    bundle(source_file)
+    logger.info(f"source file found: {source}")
+    lang = guess_lang(source)
+    lang.bundle(source)

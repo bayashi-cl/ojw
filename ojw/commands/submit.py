@@ -1,42 +1,37 @@
-import pathlib
 import shlex
 import subprocess
-import sys
-import typing
 from logging import getLogger
-from typing import Dict, List, Optional
+from pathlib import Path
 
-from ojw.util.bundle import bundle
-from ojw.util.command import get_oj_command_submit
-from ojw.util.info import find_task_dir
+from ojw.lang.guesslang import guess_lang
 
 logger = getLogger(__name__)
 
 
 def submit(args) -> None:
-    task_label: str = args.task
-    filename: Optional[str] = args.filename
+    source: Path = args.filename.resolve()
 
-    if filename is None:
-        filename = "main.cpp"
-    task_directory = find_task_dir(task_label)
-    source_file = task_directory / filename
+    if not source.exists():
+        logger.error("Source does not exist.")
+        raise FileNotFoundError
+    if not source.is_file():
+        logger.error("Source is not file.")
+        raise FileNotFoundError
 
-    if not source_file.exists():
-        logger.error("source file does not exist")
-        sys.exit(1)
-
-    # if args.bundle:
+    logger.info(f"source file found: {source}")
+    lang = guess_lang(source)
     bundle_flg = False
-    if source_file.suffix in {".cpp", ".py"} and args.no_bundle:
+    try:
+        source = lang.bundle(source)
         bundle_flg = True
-        source_file = bundle(source_file)
+    except Exception:
+        pass
 
-    oj_submit = get_oj_command_submit(source_file)
+    oj_submit = ["oj", "submit", str(source)]
     if args.pypy:
         oj_submit += ["--guess-python-interpreter", "pypy"]
-    logger.info(f"source file found: {source_file}")
-    logger.info(f'run "{shlex.join(oj_submit)}" at {task_directory}')
-    subprocess.run(oj_submit, cwd=task_directory)
+
+    logger.info(f'run "{shlex.join(oj_submit)}" at {source.parent}')
+    subprocess.run(oj_submit, cwd=source.parent)
     if bundle_flg:
-        source_file.unlink()
+        source.unlink()

@@ -2,28 +2,37 @@
 
 [Online Judge Tools](https://github.com/online-judge-tools/oj/blob/master/README.ja.md)極薄ラッパー
 
-## やりたいこと
+## 機能
 
-* コンテストディレクトリ直下から`oj`コマンド、`acc`コマンドを実行
+### oj test
+```
+ojw t path/to/file --tle 10 --case sample-01.in --optimize --tle 10 --passed -e 1e-6
+```
 
-### テスト
+### oj submit
+```
+ojw s path/to/file --no-bundle --pypy
+```
 
-`ojw test|t task [filename] [Options]`
+### oj-bundle
+```
+ojw b path/to/file
+```
 
-1. 必要ならコンパイル
-1. サンプルケースのテスト (oj t)
-    * sourceの指定がなければ既定のファイルをテスト
+### oj-prepare
+```
+TODO
+```
 
-Options:
+### コンパイル
+```
+ojw c path/to/file --optimize
+```
 
-* `-c --case <casename>`
-    - テストケースを指定
-    - `-c 1`と指定すれば`sample-1`がテストされる
-* `-p --passed <passed options>`
-    - oj側に渡されるオプション
+## 設定ファイル
 
-### 提出
+`~/.config/ojw/config.toml`
 
-`ojw submit|s task [source]`
+```toml
 
-1. `cd {task} && acc submit`とほぼ等価
+```
